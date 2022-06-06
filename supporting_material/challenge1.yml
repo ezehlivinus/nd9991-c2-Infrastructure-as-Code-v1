@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Ezeh Livinus / Udacity CloudFormation - Challenge 1
+# Create Security Group with inbound access on TCP port 80 and unrestricted outbound access
+Parameters:
+  testVPC:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-0498c7e5fff770af5
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0039748733bc7e20c
+Resources:
+  UdacitySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP access -- Inbound and Outbound traffic
+      VpcId:
+        Ref: testVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 10.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 10.0.0.0/0
+  WebServerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0022f774911c1d690
+      NetworkInterfaces:
+        - GroupSet:
+            - Ref: UdacitySecurityGroup
+          AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId:
+            Ref: PublicSubnet1
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install httpd -y
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+      

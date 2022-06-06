@@ -1,0 +1,10 @@
+[
+  {
+		"ParameterKey": "testVPC",
+		"ParameterValue": "vpc-0498c7e5fff770af5"
+	},
+	{
+		"ParameterKey": "PublicSubnet1",
+		"ParameterValue": "subnet-0039748733bc7e20c"
+	}
+]
